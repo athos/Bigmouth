@@ -13,7 +13,7 @@
   configs)
 
 (defmethod ig/init-key :handler/bigmouth [_ {:keys [configs]}]
-  (bigmouth/make-well-known-routes configs))
+  (bigmouth/make-bigmouth-routes configs))
 
 (defmethod ig/init-key :adapter/jetty [_ {:keys [handler] :as opts}]
   (let [opts (-> opts (dissoc :handler) (assoc :join? false))]

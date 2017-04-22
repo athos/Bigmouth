@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:thr="http://purl.org/syndication/thread/1.0" xmlns:activity="http://activitystrea.ms/spec/1.0/" xmlns:poco="http://portablecontacts.net/spec/1.0" xmlns:media="http://purl.org/syndication/atommedia" xmlns:ostatus="http://ostatus.org/schema/1.0" xmlns:mastodon="http://mastodon.social/schema/1.0">
+  <id>{{feed-url}}</id>
+  <title>{{username}}</title>
+  <subtitle>Scheme/Clojureが好きです。</subtitle>
+  <updated>2017-04-20T03:48:48Z</updated>
+  <logo>https://media.mstdn.jp/images/accounts/avatars/000/071/634/original/067446f328cf57fd.png?1492390613</logo>
+  <author>
+    <id>{{account-uri}}</id>
+    <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+    <uri>{{account-uri}}</uri>
+    <name>{{username}}</name>
+    <email>{{email}}</email>
+    <summary>Scheme/Clojureが好きです。</summary>
+    <link rel="alternate" type="text/html" href="{{profile-url}}"/>
+    <link rel="avatar" type="image/png" media:width="120" media:height="120" href="https://media.mstdn.jp/images/accounts/avatars/000/071/634/original/067446f328cf57fd.png?1492390613"/>
+    <link rel="header" type="" media:width="700" media:height="335" href="/headers/original/missing.png"/>
+    <poco:preferredUsername>{{username}}</poco:preferredUsername>
+    <poco:note>Scheme/Clojureが好きです。</poco:note>
+    <mastodon:scope>public</mastodon:scope>
+  </author>
+  <link rel="alternate" type="text/html" href="{{profile-url}}"/>
+  <link rel="self" type="application/atom+xml" href="{{feed-url}}"/>
+  <link rel="hub" href="{{hub-url}}"/>
+  <link rel="salmon" href="{{salmon-url}}"/>
+  <entry>
+    <id>tag:mstdn.jp,2017-04-21:objectId=2307848:objectType=Status</id>
+    <published>2017-04-21T09:39:16Z</published>
+    <updated>2017-04-21T09:39:16Z</updated>
+    <title>New status by athos</title>
+    <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>
+    <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+    <content type="html" xml:lang="en">&lt;p&gt;マストドン、配信限定のインスタンス(botの巣窟みたいなやつ)だったら相当簡略化できる気がする。WebFingerでアカウント情報だけ配布しておいたら、あとはPubSubHubbubでひたすらトゥートを配信すればいい。購読してる側のインスタンスでキャッシュされることに頼れば、トゥートを自前で保存しておく必要すらない。&lt;/p&gt;</content>
+    <link rel="mentioned" ostatus:object-type="http://activitystrea.ms/schema/1.0/collection" href="http://activityschema.org/collection/public"/>
+    <mastodon:scope>public</mastodon:scope>
+    <link rel="alternate" type="text/html" href="https://mstdn.jp/users/athos/updates/1161458"/>
+    <link rel="self" type="application/atom+xml" href="https://mstdn.jp/users/athos/updates/1161458.atom"/>
+  </entry>
+  <entry>
+    <id>tag:mstdn.jp,2017-04-20:objectId=1841297:objectType=Status</id>
+    <published>2017-04-20T04:21:12Z</published>
+    <updated>2017-04-20T04:21:12Z</updated>
+    <title>New status by athos</title>
+    <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>
+    <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+    <content type="html" xml:lang="ru">&lt;p&gt;なるほど、MastodonならGNU SocialのRichard Stallmanのアカウントをフォローすることもできるのか。RMSをフォローでき るSNSなんてなかなかないんでは。&lt;/p&gt;</content>
+    <link rel="mentioned" ostatus:object-type="http://activitystrea.ms/schema/1.0/collection" href="http://activityschema.org/collection/public"/>
+    <mastodon:scope>public</mastodon:scope>
+    <link rel="alternate" type="text/html" href="https://mstdn.jp/users/athos/updates/959518"/>
+    <link rel="self" type="application/atom+xml" href="https://mstdn.jp/users/athos/updates/959518.atom"/>
+  </entry>
+  <entry>
+    <id>tag:mstdn.jp,2017-04-17:objectId=693159:objectType=Status</id>
+    <published>2017-04-17T01:03:08Z</published>
+    <updated>2017-04-17T01:03:08Z</updated>
+    <title>New status by athos</title>
+    <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>
+    <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+    <content type="html" xml:lang="en">&lt;p&gt;改めて初トゥート&lt;/p&gt;</content>
+    <link rel="mentioned" ostatus:object-type="http://activitystrea.ms/schema/1.0/collection" href="http://activityschema.org/collection/public"/>
+    <mastodon:scope>public</mastodon:scope>
+    <link rel="alternate" type="text/html" href="https://mstdn.jp/users/athos/updates/404363"/>
+    <link rel="self" type="application/atom+xml" href="https://mstdn.jp/users/athos/updates/404363.atom"/>
+  </entry>
+</feed>
