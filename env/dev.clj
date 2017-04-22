@@ -5,10 +5,14 @@
             [ring.adapter.jetty :as jetty]))
 
 (def config
-  {:handler/bigmouth {:use-https? false :local-domain "example.com"}
+  {:configs/bigmouth {:use-https? false :local-domain "example.com"}
+   :handler/bigmouth {:configs (ig/ref :configs/bigmouth)}
    :adapter/jetty {:port 8080 :handler (ig/ref :handler/bigmouth)}})
 
-(defmethod ig/init-key :handler/bigmouth [_ configs]
+(defmethod ig/init-key :configs/bigmouth [_ configs]
+  configs)
+
+(defmethod ig/init-key :handler/bigmouth [_ {:keys [configs]}]
   (bigmouth/make-well-known-routes configs))
 
 (defmethod ig/init-key :adapter/jetty [_ {:keys [handler] :as opts}]
@@ -24,8 +28,9 @@
   (alter-var-root #'system (constantly (ig/init config))))
 
 (defn stop []
-  (ig/halt! system)
-  (alter-var-root #'system (constantly nil)))
+  (when system
+    (ig/halt! system)
+    (alter-var-root #'system (constantly nil))))
 
 (defn reset []
   (stop)
