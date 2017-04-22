@@ -1,17 +1,15 @@
 (ns dev
-  (:require [clojure.tools.namespace.repl :refer [refresh]]
+  (:require [bigmouth.routes :as bigmouth]
+            [clojure.tools.namespace.repl :refer [refresh]]
             [integrant.core :as ig]
             [ring.adapter.jetty :as jetty]))
 
 (def config
-  {:handler/bigmouth {}
+  {:handler/bigmouth {:use-https? false :local-domain "example.com"}
    :adapter/jetty {:port 8080 :handler (ig/ref :handler/bigmouth)}})
 
-(defmethod ig/init-key :handler/bigmouth [_ _]
-  (fn [req]
-    {:status 200
-     :headers {"Content-Type" "text/plain"}
-     :body "Hello, World!"}))
+(defmethod ig/init-key :handler/bigmouth [_ configs]
+  (bigmouth/make-well-known-routes configs))
 
 (defmethod ig/init-key :adapter/jetty [_ {:keys [handler] :as opts}]
   (let [opts (-> opts (dissoc :handler) (assoc :join? false))]
