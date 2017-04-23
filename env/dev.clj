@@ -20,12 +20,13 @@
 (defmethod ig/init-key :repository/subscription [_ _]
   (let [subscriptions (atom {})]
     (reify proto/SubscriptionRepository
-      (subscribe! [this account callback]
-        (swap! subscriptions update account (fnil conj #{}) callback))
+      (subscribe! [this account callback secret]
+        (let [subsription {:callback callback :secret secret}]
+          (swap! subscriptions assoc-in [account callback] subsription)))
       (unsubscribe! [this account callback]
-        (swap! subscriptions update account (fnil disj #{}) callback))
+        (swap! subscriptions update account dissoc callback))
       (find-subscriptions [this account]
-        (get @subscriptions account))
+        (vals (get @subscriptions account)))
       clojure.lang.IFn
       (invoke [this] @subscriptions))))
 

@@ -56,7 +56,7 @@
                               :hub.lease_seconds lease-seconds}}
               (fn [{:keys [status error body]}]
                 (when (and (= status 200) (not error) (= body challenge))
-                  (proto/subscribe! subscription-repo account callback))))
+                  (proto/subscribe! subscription-repo account callback secret))))
     (res/status {} 202)))
 
 (defn- unsubscribe [subscription-repo params]
