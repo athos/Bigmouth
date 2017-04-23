@@ -1,5 +1,7 @@
 (ns dev
   (:require [bigmouth.routes :as bigmouth]
+            [clojure.pprint :refer [pp pprint]]
+            [clojure.repl :refer :all]
             [clojure.tools.namespace.repl :refer [refresh]]
             [org.httpkit.server :as server]
             [integrant.core :as ig]))
