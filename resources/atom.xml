@@ -6,9 +6,9 @@
   <updated>2017-04-20T03:48:48Z</updated>
   <logo>https://media.mstdn.jp/images/accounts/avatars/000/071/634/original/067446f328cf57fd.png?1492390613</logo>
   <author>
-    <id>{{account-uri}}</id>
+    <id>{{account-url}}</id>
     <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
-    <uri>{{account-uri}}</uri>
+    <uri>{{account-url}}</uri>
     <name>{{username}}</name>
     <email>{{email}}</email>
     <summary>Scheme/Clojureが好きです。</summary>
