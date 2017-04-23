@@ -1,13 +1,13 @@
 (ns dev
   (:require [bigmouth.routes :as bigmouth]
             [clojure.tools.namespace.repl :refer [refresh]]
-            [integrant.core :as ig]
-            [ring.adapter.jetty :as jetty]))
+            [org.httpkit.server :as server]
+            [integrant.core :as ig]))
 
 (def config
-  {:configs/bigmouth {:use-https? false :local-domain "example.com"}
+  {:configs/bigmouth {:use-https? false :local-domain "c2d7f0d9.ngrok.io"}
    :handler/bigmouth {:configs (ig/ref :configs/bigmouth)}
-   :adapter/jetty {:port 8080 :handler (ig/ref :handler/bigmouth)}})
+   :adapter/http-kit {:port 8080 :handler (ig/ref :handler/bigmouth)}})
 
 (defmethod ig/init-key :configs/bigmouth [_ configs]
   configs)
@@ -15,12 +15,11 @@
 (defmethod ig/init-key :handler/bigmouth [_ {:keys [configs]}]
   (bigmouth/make-bigmouth-routes configs))
 
-(defmethod ig/init-key :adapter/jetty [_ {:keys [handler] :as opts}]
-  (let [opts (-> opts (dissoc :handler) (assoc :join? false))]
-    (jetty/run-jetty handler opts)))
+(defmethod ig/init-key :adapter/http-kit [_ {:keys [handler] :as opts}]
+  (server/run-server handler (dissoc opts :handler)))
 
-(defmethod ig/halt-key! :adapter/jetty [_ server]
-  (.stop server))
+(defmethod ig/halt-key! :adapter/http-kit [_ server]
+  (server))
 
 (def system nil)
 
