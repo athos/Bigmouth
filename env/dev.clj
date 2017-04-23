@@ -1,5 +1,6 @@
 (ns dev
   (:require [bigmouth.routes :as bigmouth]
+            [bigmouth.protocols :as proto]
             [clojure.pprint :refer [pp pprint]]
             [clojure.repl :refer :all]
             [clojure.tools.namespace.repl :refer [refresh]]
@@ -8,14 +9,29 @@
 
 (def config
   {:configs/bigmouth {:use-https? false :local-domain "c2d7f0d9.ngrok.io"}
-   :handler/bigmouth {:configs (ig/ref :configs/bigmouth)}
+   :repository/subscription {}
+   :handler/bigmouth {:configs (ig/ref :configs/bigmouth)
+                      :subscription-repo (ig/ref :repository/subscription)}
    :adapter/http-kit {:port 8080 :handler (ig/ref :handler/bigmouth)}})
 
 (defmethod ig/init-key :configs/bigmouth [_ configs]
   configs)
 
-(defmethod ig/init-key :handler/bigmouth [_ {:keys [configs]}]
-  (bigmouth/make-bigmouth-routes configs))
+(defmethod ig/init-key :repository/subscription [_ _]
+  (let [subscriptions (atom {})]
+    (reify proto/SubscriptionRepository
+      (subscribe! [this account callback]
+        (swap! subscriptions update account (fnil conj #{}) callback))
+      (unsubscribe! [this account callback]
+        (swap! subscriptions update account (fnil disj #{}) callback))
+      (find-subscriptions [this account]
+        (get @subscriptions account))
+      clojure.lang.IFn
+      (invoke [this] @subscriptions))))
+
+(defmethod ig/init-key :handler/bigmouth [_ opts]
+  (bigmouth/make-bigmouth-routes (:subscription-repo opts)
+                                 (:configs opts)))
 
 (defmethod ig/init-key :adapter/http-kit [_ {:keys [handler] :as opts}]
   (server/run-server handler (dissoc opts :handler)))
