@@ -23,43 +23,19 @@
   <link rel="self" type="application/atom+xml" href="{{feed-url}}"/>
   <link rel="hub" href="{{hub-url}}"/>
   <link rel="salmon" href="{{salmon-url}}"/>
+  {% for entry in entries %}
   <entry>
-    <id>tag:mstdn.jp,2017-04-21:objectId=2307848:objectType=Status</id>
-    <published>2017-04-21T09:39:16Z</published>
-    <updated>2017-04-21T09:39:16Z</updated>
-    <title>New status by athos</title>
+    <id>{{entry.id}}</id>
+    <published>{{entry.created_at|date:"yyyy-MM-dd'T'HH:mm:ssZZ"}}</published>
+    <updated>{{entry.updated_at|date:"yyyy-MM-dd'T'HH:mm:ssZZ"}}</updated>
+    <title>New status by {{username}}</title>
     <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>
     <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
-    <content type="html" xml:lang="en">&lt;p&gt;マストドン、配信限定のインスタンス(botの巣窟みたいなやつ)だったら相当簡略化できる気がする。WebFingerでアカウント情報だけ配布しておいたら、あとはPubSubHubbubでひたすらトゥートを配信すればいい。購読してる側のインスタンスでキャッシュされることに頼れば、トゥートを自前で保存しておく必要すらない。&lt;/p&gt;</content>
+    <content type="html" xml:lang="en">&lt;p&gt;{{entry.message}}&lt;/p&gt;</content>
     <link rel="mentioned" ostatus:object-type="http://activitystrea.ms/schema/1.0/collection" href="http://activityschema.org/collection/public"/>
-    <mastodon:scope>public</mastodon:scope>
+    <mastodon:scope>{{entry.scope}}</mastodon:scope>
     <link rel="alternate" type="text/html" href="https://mstdn.jp/users/athos/updates/1161458"/>
     <link rel="self" type="application/atom+xml" href="https://mstdn.jp/users/athos/updates/1161458.atom"/>
   </entry>
-  <entry>
-    <id>tag:mstdn.jp,2017-04-20:objectId=1841297:objectType=Status</id>
-    <published>2017-04-20T04:21:12Z</published>
-    <updated>2017-04-20T04:21:12Z</updated>
-    <title>New status by athos</title>
-    <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>
-    <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
-    <content type="html" xml:lang="ru">&lt;p&gt;なるほど、MastodonならGNU SocialのRichard Stallmanのアカウントをフォローすることもできるのか。RMSをフォローでき るSNSなんてなかなかないんでは。&lt;/p&gt;</content>
-    <link rel="mentioned" ostatus:object-type="http://activitystrea.ms/schema/1.0/collection" href="http://activityschema.org/collection/public"/>
-    <mastodon:scope>public</mastodon:scope>
-    <link rel="alternate" type="text/html" href="https://mstdn.jp/users/athos/updates/959518"/>
-    <link rel="self" type="application/atom+xml" href="https://mstdn.jp/users/athos/updates/959518.atom"/>
-  </entry>
-  <entry>
-    <id>tag:mstdn.jp,2017-04-17:objectId=693159:objectType=Status</id>
-    <published>2017-04-17T01:03:08Z</published>
-    <updated>2017-04-17T01:03:08Z</updated>
-    <title>New status by athos</title>
-    <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>
-    <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
-    <content type="html" xml:lang="en">&lt;p&gt;改めて初トゥート&lt;/p&gt;</content>
-    <link rel="mentioned" ostatus:object-type="http://activitystrea.ms/schema/1.0/collection" href="http://activityschema.org/collection/public"/>
-    <mastodon:scope>public</mastodon:scope>
-    <link rel="alternate" type="text/html" href="https://mstdn.jp/users/athos/updates/404363"/>
-    <link rel="self" type="application/atom+xml" href="https://mstdn.jp/users/athos/updates/404363.atom"/>
-  </entry>
+  {% endfor %}
 </feed>

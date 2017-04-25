@@ -1,5 +1,6 @@
 (ns bigmouth.routes
-  (:require [bigmouth.protocols :as proto]
+  (:require [bigmouth.atom :as atom]
+            [bigmouth.protocols :as proto]
             [bigmouth.utils :as utils]
             [bigmouth.webfinger :as webfinger]
             [clojure.data.json :as json]
@@ -31,15 +32,9 @@
       (wrap-keyword-params)
       (wrap-params)))
 
-(defn- user-feed [account {:keys [local-domain] :as configs}]
-  (let [context {:username account
-                 :email (format "%s@%s" account local-domain)
-                 :feed-url (utils/feed-url account configs)
-                 :account-url (utils/account-url account configs)
-                 :profile-url (utils/profile-url account configs)
-                 :hub-url (utils/hub-url configs)
-                 :salmon-url (utils/salmon-url "FIXME" configs)}]
-    (-> (res/response (parser/render-file "atom.xml" context))
+(defn- user-feed [account configs]
+  (let [entry {:id "001", :message "hogehoge"}]
+    (-> (res/response (atom/atom-feed account [entry] configs))
         (res/content-type "application/atom+xml; charset=utf-8"))))
 
 (defn- subscribe [subscription-repo params configs]
