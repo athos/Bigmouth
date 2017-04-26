@@ -9,7 +9,7 @@
   (:import [java.util Date]))
 
 (def config
-  {:configs/bigmouth {:use-https? false :local-domain "c2d7f0d9.ngrok.io"}
+  {:configs/bigmouth {:use-https? false :local-domain "localhost:8080"}
    :repository/subscription {}
    :handler/bigmouth {:configs (ig/ref :configs/bigmouth)
                       :subscription-repo (ig/ref :repository/subscription)}
