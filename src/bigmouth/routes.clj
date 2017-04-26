@@ -1,6 +1,6 @@
 (ns bigmouth.routes
   (:require [bigmouth.atom :as atom]
-            [bigmouth.protocols :as proto]
+            [bigmouth.models.subscription :as subs]
             [bigmouth.utils :as utils]
             [bigmouth.webfinger :as webfinger]
             [clojure.data.json :as json]
@@ -56,7 +56,7 @@
                               :hub.lease_seconds lease-seconds}}
               (fn [{:keys [status error body]}]
                 (when (and (= status 200) (not error) (= body challenge))
-                  (proto/subscribe! subscription-repo account callback secret lease-seconds))))
+                  (subs/subscribe! subscription-repo account callback secret lease-seconds))))
     (res/status {} 202)))
 
 (defn- unsubscribe [subscription-repo params]

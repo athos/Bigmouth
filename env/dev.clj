@@ -1,6 +1,6 @@
 (ns dev
   (:require [bigmouth.routes :as bigmouth]
-            [bigmouth.protocols :as proto]
+            [bigmouth.models.subscription :as subs]
             [clojure.pprint :refer [pp pprint]]
             [clojure.repl :refer :all]
             [clojure.tools.namespace.repl :refer [refresh]]
@@ -19,21 +19,7 @@
   configs)
 
 (defmethod ig/init-key :repository/subscription [_ _]
-  (let [subscriptions (atom {})]
-    (reify proto/SubscriptionRepository
-      (subscribe! [this account callback secret lease-seconds]
-        (let [subsription {:callback callback :secret secret
-                           :expires_at (+ (.getTime (Date.))
-                                          (* 1000 lease-seconds))}]
-          (swap! subscriptions assoc-in [account callback] subsription)))
-      (unsubscribe! [this account callback]
-        (swap! subscriptions update account dissoc callback))
-      (find-subscriptions [this account]
-        (let [now (.getTime (Date.))]
-          (->> (vals (get @subscriptions account))
-               (filter #(> (:expires_at %) now)))))
-      clojure.lang.IFn
-      (invoke [this] @subscriptions))))
+  (subs/simple-in-memory-subscription-repository))
 
 (defmethod ig/init-key :handler/bigmouth [_ opts]
   (bigmouth/make-bigmouth-routes (:subscription-repo opts)
