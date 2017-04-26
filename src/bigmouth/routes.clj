@@ -42,6 +42,11 @@
         secret (get params "hub.secret")
         callback (get params "hub.callback")
         lease-seconds (get params "hub.lease_seconds")
+        lease-seconds (if (empty? lease-seconds)
+                        (* 86400 7)
+                        (-> (Long/parseLong lease-seconds)
+                            (min (* 86400 30))
+                            (max (* 86400 7))))
         [_ account] (re-find #"/users/([^.]+?).atom$" topic)
         challenge (str (rand-int Integer/MAX_VALUE))] ;FIXME: more secure challenge message needed
     (http/get callback
@@ -51,7 +56,7 @@
                               :hub.lease_seconds lease-seconds}}
               (fn [{:keys [status error body]}]
                 (when (and (= status 200) (not error) (= body challenge))
-                  (proto/subscribe! subscription-repo account callback secret))))
+                  (proto/subscribe! subscription-repo account callback secret lease-seconds))))
     (res/status {} 202)))
 
 (defn- unsubscribe [subscription-repo params]

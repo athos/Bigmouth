@@ -5,7 +5,8 @@
             [clojure.repl :refer :all]
             [clojure.tools.namespace.repl :refer [refresh]]
             [org.httpkit.server :as server]
-            [integrant.core :as ig]))
+            [integrant.core :as ig])
+  (:import [java.util Date]))
 
 (def config
   {:configs/bigmouth {:use-https? false :local-domain "c2d7f0d9.ngrok.io"}
@@ -20,13 +21,17 @@
 (defmethod ig/init-key :repository/subscription [_ _]
   (let [subscriptions (atom {})]
     (reify proto/SubscriptionRepository
-      (subscribe! [this account callback secret]
-        (let [subsription {:callback callback :secret secret}]
+      (subscribe! [this account callback secret lease-seconds]
+        (let [subsription {:callback callback :secret secret
+                           :expires_at (+ (.getTime (Date.))
+                                          (* 1000 lease-seconds))}]
           (swap! subscriptions assoc-in [account callback] subsription)))
       (unsubscribe! [this account callback]
         (swap! subscriptions update account dissoc callback))
       (find-subscriptions [this account]
-        (vals (get @subscriptions account)))
+        (let [now (.getTime (Date.))]
+          (->> (vals (get @subscriptions account))
+               (filter #(> (:expires_at %) now)))))
       clojure.lang.IFn
       (invoke [this] @subscriptions))))
 
