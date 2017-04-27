@@ -6,8 +6,7 @@
             [clojure.repl :refer :all]
             [clojure.tools.namespace.repl :refer [refresh]]
             [org.httpkit.server :as server]
-            [integrant.core :as ig])
-  (:import [java.util Date]))
+            [integrant.core :as ig]))
 
 (def config
   {:configs/bigmouth {:use-https? false :local-domain "localhost:8080"}
