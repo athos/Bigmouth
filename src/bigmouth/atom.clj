@@ -12,12 +12,14 @@
       (not (string? (:scope entry))) (update :scope name))))
 
 (defn atom-feed [account entries {:keys [local-domain] :as configs}]
-  (let [context {:username account
-                 :email (format "%s@%s" account local-domain)
-                 :feed-url (utils/feed-url account configs)
-                 :account-url (utils/account-url account configs)
-                 :profile-url (utils/profile-url account configs)
+  (let [username (:username account)
+        context {:username username
+                 :description (:description account)
+                 :email (format "%s@%s" username local-domain)
+                 :feed-url (utils/feed-url username configs)
+                 :account-url (utils/account-url username configs)
+                 :profile-url (utils/profile-url username configs)
                  :hub-url (utils/hub-url configs)
-                 :salmon-url (utils/salmon-url "FIXME" configs)
+                 :salmon-url (utils/salmon-url (:id account) configs)
                  :entries (into [] (map normalize-entry) entries)}]
     (parser/render-file "atom.xml" context)))

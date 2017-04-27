@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:thr="http://purl.org/syndication/thread/1.0" xmlns:activity="http://activitystrea.ms/spec/1.0/" xmlns:poco="http://portablecontacts.net/spec/1.0" xmlns:media="http://purl.org/syndication/atommedia" xmlns:ostatus="http://ostatus.org/schema/1.0" xmlns:mastodon="http://mastodon.social/schema/1.0">
   <id>{{feed-url}}</id>
   <title>{{username}}</title>
-  <subtitle>Scheme/Clojureが好きです。</subtitle>
+  <subtitle>{{description}}</subtitle>
   <updated>2017-04-20T03:48:48Z</updated>
   <logo>https://media.mstdn.jp/images/accounts/avatars/000/071/634/original/067446f328cf57fd.png?1492390613</logo>
   <author>
@@ -11,12 +11,12 @@
     <uri>{{account-url}}</uri>
     <name>{{username}}</name>
     <email>{{email}}</email>
-    <summary>Scheme/Clojureが好きです。</summary>
+    <summary>{{description}}</summary>
     <link rel="alternate" type="text/html" href="{{profile-url}}"/>
     <link rel="avatar" type="image/png" media:width="120" media:height="120" href="https://media.mstdn.jp/images/accounts/avatars/000/071/634/original/067446f328cf57fd.png?1492390613"/>
     <link rel="header" type="" media:width="700" media:height="335" href="/headers/original/missing.png"/>
     <poco:preferredUsername>{{username}}</poco:preferredUsername>
-    <poco:note>Scheme/Clojureが好きです。</poco:note>
+    <poco:note>{{description}}</poco:note>
     <mastodon:scope>public</mastodon:scope>
   </author>
   <link rel="alternate" type="text/html" href="{{profile-url}}"/>
