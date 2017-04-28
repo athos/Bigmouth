@@ -1,5 +1,6 @@
 (ns bigmouth.webfinger
-  (:require [bigmouth.utils :as utils]))
+  (:require [bigmouth.models.account :as account]
+            [bigmouth.utils :as utils]))
 
 (defn account-resource [account {:keys [local-domain] :as configs}]
   (let [username (:username account)
@@ -15,7 +16,8 @@
              {:rel "salmon"
               :href (utils/salmon-url (:id account) configs)}
              {:rel "magic-public-key"
-              :href "data:application/magic-public-key,RSA.rrOhHpSf_Sypkx14xjSQEgDXGxQvpdmOvyUWgUh8DsPYeACnDN0_qztYWHXcRf73lcNWIy9t3hBQ37lVdTyHZxOZ1X8ryunsWHVyJ6u-JEUTk7tDK_lxFz9HAsATH714T2IauawlJoNyucztP0nQxwOnsKWeNzvXKFjtVPuXNrtOapuqcPeAt8BzFzJt-0QBUQ1POPIQGeMVqdzG-wnxINF-yZvnRlgWfvujJwUDwRwseMukgGRrYDgbuye1bYJAlK6dlrZtHcd8IwC7uguk11gVpyacYHnAc9FTmq1C2T2-JeZwK2yehDuZjGqxy1AktqMqkKlTnOGbQ5WA_ErXhQ==.AQAB"}
+              :href (str "data:application/magic-public-key,"
+                         (account/public-key->magic-key (:public_key account)))}
              {:rel "http://ostatus.org/schema/1.0/subscribe"
               :template (str (utils/base-url configs)
                              "/authorize_follow?acct={uri}")}]}))
