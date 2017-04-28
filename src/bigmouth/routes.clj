@@ -8,10 +8,12 @@
             [clojure.string :as str]
             [compojure.core :refer :all]
             [org.httpkit.client :as http]
+            [pandect.utils.convert :as conv]
             [ring.util.response :as res]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [selmer.parser :as parser]))
+            [selmer.parser :as parser])
+  (:import [java.security SecureRandom]))
 
 (defn- host-meta [{:keys [use-https? local-domain]}]
   (let [context {:use-https? use-https? :local-domain local-domain}]
@@ -40,6 +42,14 @@
     (-> (res/response (atom/atom-feed account [entry] configs))
         (res/content-type "application/atom+xml; charset=utf-8"))))
 
+(defn- secure-random
+  ([] (secure-random 16))
+  ([size]
+   (let [r (SecureRandom/getInstanceStrong)
+         bs (byte-array size)]
+     (.nextBytes r bs)
+     (conv/bytes->hex bs))))
+
 (defn- subscribe [subscription-repo params configs]
   (let [topic (get params "hub.topic")
         secret (get params "hub.secret")
@@ -51,7 +61,7 @@
                             (min (* 86400 30))
                             (max (* 86400 7))))
         [_ account] (re-find #"/users/([^.]+?).atom$" topic)
-        challenge (str (rand-int Integer/MAX_VALUE))] ;FIXME: more secure challenge message needed
+        challenge (secure-random)]
     (http/get callback
               {:query-params {:hub.topic (utils/feed-url account configs)
                               :hub.mode "subscribe"
