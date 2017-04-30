@@ -1,5 +1,6 @@
 (ns bigmouth.models.account
-  (:require [clojure.string :as str])
+  (:require [bigmouth.utils :as utils]
+            [clojure.string :as str])
   (:import [java.security KeyPair KeyPairGenerator KeyFactory]
            [java.security.interfaces RSAPublicKey]
            [java.security.spec RSAPublicKeySpec]
@@ -45,6 +46,31 @@
   (->SimpleInMemoryAccountRepository (atom {})))
 
 ;; utils
+
+(defn ->username [account]
+  (if (string? account)
+    account
+    (:username account)))
+
+(defn ->account [account-repo account]
+  (if (string? account)
+    (find-account account-repo account)
+    account))
+
+(defn feed-url [account configs]
+  (format "%s/users/%s.atom" (utils/base-url configs) (->username account)))
+
+(defn account-url [account configs]
+  (format "%s/users/%s" (utils/base-url configs) (->username account)))
+
+(defn profile-url [account configs]
+  (format "%s/@%s" (utils/base-url configs) (->username account)))
+
+(defn hub-url [configs]
+  (format "%s/api/push" (utils/base-url configs)))
+
+(defn salmon-url [account configs]
+  (format "%s/salmon/%s" (utils/base-url configs) (:id account)))
 
 (defn public-key->magic-key [^RSAPublicKey key]
   (let [encoder (Base64/getUrlEncoder)

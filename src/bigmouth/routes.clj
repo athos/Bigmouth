@@ -2,7 +2,6 @@
   (:require [bigmouth.atom :as atom]
             [bigmouth.models.account :as account]
             [bigmouth.models.subscription :as subs]
-            [bigmouth.utils :as utils]
             [bigmouth.webfinger :as webfinger]
             [clojure.data.json :as json]
             [clojure.string :as str]
@@ -63,7 +62,7 @@
         [_ account] (re-find #"/users/([^.]+?).atom$" topic)
         challenge (secure-random)]
     (http/get callback
-              {:query-params {:hub.topic (utils/feed-url account configs)
+              {:query-params {:hub.topic (account/feed-url account configs)
                               :hub.mode "subscribe"
                               :hub.challenge challenge
                               :hub.lease_seconds lease-seconds}}
