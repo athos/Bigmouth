@@ -1,6 +1,7 @@
-(ns bigmouth.core)
+(ns bigmouth.core
+  (:require [bigmouth.routes :as routes]
+            [bigmouth.status-updater :as updater]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn bigmouth [context]
+  {:handler (routes/make-bigmouth-routes context)
+   :updater (updater/make-status-updater context)})

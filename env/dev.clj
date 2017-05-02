@@ -1,5 +1,5 @@
 (ns dev
-  (:require [bigmouth.routes :as bigmouth]
+  (:require [bigmouth.core :as bigmouth]
             [bigmouth.models.subscription :as subs]
             [bigmouth.models.account :as account]
             [clojure.pprint :refer [pp pprint]]
@@ -10,12 +10,12 @@
 
 (def config
   {:configs/bigmouth {:use-https? false :local-domain "localhost:8080"}
-   :repository/subscription {}
    :repository/account {}
-   :handler/bigmouth {:configs (ig/ref :configs/bigmouth)
-                      :accounts (ig/ref :repository/account)
-                      :subscriptions (ig/ref :repository/subscription)}
-   :adapter/http-kit {:port 8080 :handler (ig/ref :handler/bigmouth)}})
+   :repository/subscription {}
+   :app/bigmouth {:configs (ig/ref :configs/bigmouth)
+                  :accounts (ig/ref :repository/account)
+                  :subscriptions (ig/ref :repository/subscription)}
+   :adapter/http-kit {:port 8080 :app (ig/ref :app/bigmouth)}})
 
 (defmethod ig/init-key :configs/bigmouth [_ configs]
   configs)
@@ -26,11 +26,11 @@
 (defmethod ig/init-key :repository/subscription [_ _]
   (subs/simple-in-memory-subscription-repository))
 
-(defmethod ig/init-key :handler/bigmouth [_ context]
-  (bigmouth/make-bigmouth-routes context))
+(defmethod ig/init-key :app/bigmouth [_ context]
+  (bigmouth/bigmouth context))
 
-(defmethod ig/init-key :adapter/http-kit [_ {:keys [handler] :as opts}]
-  (server/run-server handler (dissoc opts :handler)))
+(defmethod ig/init-key :adapter/http-kit [_ {:keys [app] :as opts}]
+  (server/run-server (:handler app) (dissoc opts :app)))
 
 (defmethod ig/halt-key! :adapter/http-kit [_ server]
   (server))
