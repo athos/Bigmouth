@@ -3,8 +3,7 @@
             [clojure.string :as str])
   (:import [java.security KeyPair KeyPairGenerator KeyFactory]
            [java.security.interfaces RSAPublicKey]
-           [java.security.spec RSAPublicKeySpec]
-           [java.util Base64]))
+           [java.security.spec RSAPublicKeySpec]))
 
 (set! *warn-on-reflection* true)
 
@@ -73,15 +72,13 @@
   (format "%s/salmon/%s" (utils/base-url configs) (:id account)))
 
 (defn public-key->magic-key [^RSAPublicKey key]
-  (let [encoder (Base64/getUrlEncoder)
-        conv #(.encodeToString encoder (.toByteArray ^BigInteger %))
+  (let [conv #(utils/base64-encode (.toByteArray ^BigInteger %))
         modulus (conv (.getModulus key))
         exponent (conv (.getPublicExponent key))]
     (str "RSA." modulus "." exponent)))
 
 (defn magic-key->public-key [magic-key]
-  (let [decoder (Base64/getUrlDecoder)
-        conv #(BigInteger. (.decode decoder ^String %))
+  (let [conv #(BigInteger. (utils/base64-decode %))
         [_ modulus exponent] (str/split magic-key #"\.")
         spec (RSAPublicKeySpec. (conv modulus) (conv exponent))]
     (.. (KeyFactory/getInstance "RSA")
