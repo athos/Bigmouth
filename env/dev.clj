@@ -13,8 +13,8 @@
    :repository/subscription {}
    :repository/account {}
    :handler/bigmouth {:configs (ig/ref :configs/bigmouth)
-                      :account-repo (ig/ref :repository/account)
-                      :subscription-repo (ig/ref :repository/subscription)}
+                      :accounts (ig/ref :repository/account)
+                      :subscriptions (ig/ref :repository/subscription)}
    :adapter/http-kit {:port 8080 :handler (ig/ref :handler/bigmouth)}})
 
 (defmethod ig/init-key :configs/bigmouth [_ configs]
@@ -26,10 +26,8 @@
 (defmethod ig/init-key :repository/subscription [_ _]
   (subs/simple-in-memory-subscription-repository))
 
-(defmethod ig/init-key :handler/bigmouth [_ opts]
-  (bigmouth/make-bigmouth-routes (:account-repo opts)
-                                 (:subscription-repo opts)
-                                 (:configs opts)))
+(defmethod ig/init-key :handler/bigmouth [_ context]
+  (bigmouth/make-bigmouth-routes context))
 
 (defmethod ig/init-key :adapter/http-kit [_ {:keys [handler] :as opts}]
   (server/run-server handler (dissoc opts :handler)))

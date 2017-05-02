@@ -14,7 +14,7 @@
      (.nextBytes r bs)
      (conv/bytes->hex bs))))
 
-(defn subscribe [subscription-repo params configs]
+(defn subscribe [context params]
   (let [topic (get params "hub.topic")
         secret (get params "hub.secret")
         callback (get params "hub.callback")
@@ -24,17 +24,22 @@
                         (-> (Long/parseLong lease-seconds)
                             (min (* 86400 30))
                             (max (* 86400 7))))
-        [_ account] (re-find #"/users/([^.]+?).atom$" topic)
+        [_ username] (re-find #"/users/([^.]+?).atom$" topic)
         challenge (secure-random)]
     (http/get callback
-              {:query-params {:hub.topic (account/feed-url account configs)
-                              :hub.mode "subscribe"
-                              :hub.challenge challenge
-                              :hub.lease_seconds lease-seconds}}
+              {:query-params
+               {:hub.topic (account/feed-url username (:configs context))
+                :hub.mode "subscribe"
+                :hub.challenge challenge
+                :hub.lease_seconds lease-seconds}}
               (fn [{:keys [status error body]}]
                 (when (and (= status 200) (not error) (= body challenge))
-                  (subs/subscribe! subscription-repo account callback secret lease-seconds))))
+                  (subs/subscribe! (:subscriptions context)
+                                   username
+                                   callback
+                                   secret
+                                   lease-seconds))))
     (res/status {} 202)))
 
-(defn unsubscribe [subscription-repo params]
+(defn unsubscribe [context params]
   (prn :params params))

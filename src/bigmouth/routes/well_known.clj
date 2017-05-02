@@ -8,23 +8,24 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [selmer.parser :as parser]))
 
-(defn- host-meta [{:keys [use-https? local-domain]}]
-  (let [context {:use-https? use-https? :local-domain local-domain}]
-    (-> (res/response (parser/render-file "host-meta" context))
+(defn- host-meta [context]
+  (let [{:keys [use-https? local-domain]} (:configs context)
+        values {:use-https? use-https? :local-domain local-domain}]
+    (-> (res/response (parser/render-file "host-meta" values))
         (res/content-type "application/xrd+xml; charset=utf-8"))))
 
-(defn- webfinger [account-repo resource-uri configs]
+(defn- webfinger [context resource-uri]
   (let [[_ username] (re-find #"^acct:([^@]*?)@" resource-uri)
-        account (account/find-account account-repo username)
-        account-resource (webfinger/account-resource account configs)]
+        account (account/find-account (:accounts context) username)
+        account-resource (webfinger/account-resource account (:configs context))]
     (-> (res/response (json/write-str account-resource))
         (res/content-type "application/jrd+json; charset=utf-8"))))
 
-(defn make-well-known-routes [account-repo configs]
+(defn make-well-known-routes [context]
   (-> (routes
         (GET "/.well-known/host-meta" []
-          (host-meta configs))
+          (host-meta context))
         (GET "/.well-known/webfinger" [resource]
-          (webfinger account-repo resource configs)))
+          (webfinger context resource)))
       (wrap-keyword-params)
       (wrap-params)))

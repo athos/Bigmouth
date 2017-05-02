@@ -9,11 +9,9 @@
     (when (str/starts-with? uri path)
       (route req))))
 
-(defn make-bigmouth-routes [account-repo subscription-repo configs]
-  (let [well-known-routes (make-well-known-routes account-repo configs)
-        mastodon-routes (make-mastodon-routes account-repo
-                                              subscription-repo
-                                              configs)]
+(defn make-bigmouth-routes [context]
+  (let [well-known-routes (make-well-known-routes context)
+        mastodon-routes (make-mastodon-routes context)]
     (routes
       (if-matches "/.well-known"
         well-known-routes)

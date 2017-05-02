@@ -7,22 +7,22 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]))
 
-(defn- user-feed [account-repo username configs]
-  (let [account (account/find-account account-repo username)
+(defn- user-feed [context username]
+  (let [account (account/find-account (:accounts context) username)
         entry {:id "001", :message "hogehoge"}]
-    (-> (res/response (atom/atom-feed account [entry] configs))
+    (-> (res/response (atom/atom-feed account [entry] (:configs context)))
         (res/content-type "application/atom+xml; charset=utf-8"))))
 
-(defn- subscribe [subscription-repo params configs]
+(defn- subscription [context params]
   (if (= (get params "hub.mode") "subscribe")
-    (subscribe subscription-repo params configs)
-    (unsubscribe subscription-repo params configs)))
+    (subscribe context params)
+    (unsubscribe context params)))
 
-(defn make-mastodon-routes [account-repo subscription-repo configs]
+(defn make-mastodon-routes [context]
   (-> (routes
         (GET "/users/:username.atom" [username]
-          (user-feed account-repo username configs))
+          (user-feed context username))
         (POST "/api/push" {:keys [params]}
-          (subscribe subscription-repo params configs)))
+          (subscription context params)))
       (wrap-keyword-params)
       (wrap-params)))
