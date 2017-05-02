@@ -13,13 +13,16 @@
     (-> (res/response (atom/atom-feed account [entry] configs))
         (res/content-type "application/atom+xml; charset=utf-8"))))
 
+(defn- subscribe [subscription-repo params configs]
+  (if (= (get params "hub.mode") "subscribe")
+    (subscribe subscription-repo params configs)
+    (unsubscribe subscription-repo params configs)))
+
 (defn make-mastodon-routes [account-repo subscription-repo configs]
   (-> (routes
         (GET "/users/:username.atom" [username]
           (user-feed account-repo username configs))
         (POST "/api/push" {:keys [params]}
-          (if (= (get params "hub.mode") "subscribe")
-            (subscribe subscription-repo params configs)
-            (unsubscribe subscription-repo params configs))))
+          (subscribe subscription-repo params configs)))
       (wrap-keyword-params)
       (wrap-params)))
