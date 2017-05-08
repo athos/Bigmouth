@@ -1,6 +1,16 @@
-# bigmouth
+# Bigmouth [![Clojars Project](https://img.shields.io/clojars/v/bigmouth.svg)](https://clojars.org/bigmouth)
 
-A Clojure library designed to ... well, that part is up to you.
+Bigmouth is a Clojure framework to build delivery-only Mastodon-compatible web apps.
+
+**Note**: Bigmouth is currently still in alpha quality and so not really suited for production use.
+
+## Install
+
+Add the following line to your `:dependencies`:
+
+[![Clojars Project](https://clojars.org/bigmouth/latest-version.svg)](http://clojars.org/bigmouth)
+
+Make sure you have JVM 1.8.0 or later to run your Bigmouth app since Bigmouth is using a couple of the features introduced in JVM 1.8.
 
 ## Usage
 
