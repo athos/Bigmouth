@@ -1,7 +1,8 @@
 (ns dev
   (:require [bigmouth.core :as bigmouth]
-            [bigmouth.models.subscription :as subs]
             [bigmouth.models.account :as account]
+            [bigmouth.models.keystore :as keystore]
+            [bigmouth.models.subscription :as subs]
             [clojure.pprint :refer [pp pprint]]
             [clojure.repl :refer :all]
             [clojure.tools.namespace.repl :refer [refresh]]
@@ -11,9 +12,11 @@
 (def config
   {:configs/bigmouth {:use-https? false :local-domain "localhost:8080"}
    :repository/account {}
+   :repository/keystore {}
    :repository/subscription {}
    :app/bigmouth {:configs (ig/ref :configs/bigmouth)
                   :accounts (ig/ref :repository/account)
+                  :keystore (ig/ref :repository/keystore)
                   :subscriptions (ig/ref :repository/subscription)}
    :adapter/http-kit {:port 8080 :app (ig/ref :app/bigmouth)}})
 
@@ -22,6 +25,9 @@
 
 (defmethod ig/init-key :repository/account [_ _]
   (account/simple-in-memory-account-repository))
+
+(defmethod ig/init-key :repository/keystore [_ _]
+  (keystore/simple-in-memory-keystore))
 
 (defmethod ig/init-key :repository/subscription [_ _]
   (subs/simple-in-memory-subscription-repository))

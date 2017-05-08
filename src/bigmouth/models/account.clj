@@ -1,7 +1,7 @@
 (ns bigmouth.models.account
   (:require [bigmouth.utils :as utils]
             [clojure.string :as str])
-  (:import [java.security KeyPair KeyPairGenerator KeyFactory]
+  (:import [java.security KeyFactory]
            [java.security.interfaces RSAPublicKey]
            [java.security.spec RSAPublicKeySpec]))
 
@@ -10,27 +10,17 @@
 (defprotocol AccountRepository
   (find-account [this username]))
 
-(defn fresh-keypair
-  ([] (fresh-keypair 2048))
-  ([key-size]
-   (let [gen (doto (KeyPairGenerator/getInstance "RSA")
-               (.initialize (int key-size)))]
-     (.generateKeyPair gen))))
-
 (defn- ensure-account! [accounts username]
   (swap! accounts
          (fn [accounts]
            (if (get accounts username)
              accounts
-             (let [id (inc (count accounts))
-                   ^KeyPair keypair (fresh-keypair)]
+             (let [id (inc (count accounts))]
                (assoc accounts username
                       {:id id
                        :username username
                        :description "no description"
-                       :locked false
-                       :public_key (.getPublic keypair)
-                       :private_key (.getPrivate keypair)}))))))
+                       :locked false}))))))
 
 ;; The implementation below isn't intended to be used in production.
 ;; It's here mainly for development purpose.

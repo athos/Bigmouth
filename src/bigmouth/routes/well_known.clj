@@ -14,10 +14,10 @@
     (-> (res/response (parser/render-file "host-meta" values))
         (res/content-type "application/xrd+xml; charset=utf-8"))))
 
-(defn- webfinger [{:keys [accounts configs]} resource-uri]
+(defn- webfinger [context resource-uri]
   (let [[_ username] (re-find #"^acct:([^@]*?)@" resource-uri)]
-    (when-let [account (account/find-account accounts username)]
-      (let [resource (webfinger/account-resource account configs)]
+    (when-let [account (account/find-account (:accounts context) username)]
+      (let [resource (webfinger/account-resource context account)]
         (-> (res/response (json/write-str resource))
             (res/content-type "application/jrd+json; charset=utf-8"))))))
 
