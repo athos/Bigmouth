@@ -1,7 +1,9 @@
 (ns bigmouth.webfinger
   (:require [bigmouth.models.account :as account]
             [bigmouth.models.keystore :as keystore]
-            [bigmouth.utils :as utils]))
+            [bigmouth.utils :as utils]
+            [clojure.data.json :as json]
+            [org.httpkit.client :as http]))
 
 (defn account-resource [{:keys [configs] :as context} account]
   (let [profile-url (account/profile-url account configs)
@@ -22,3 +24,17 @@
              {:rel "http://ostatus.org/schema/1.0/subscribe"
               :template (str (utils/base-url configs)
                              "/authorize_follow?acct={uri}")}]}))
+
+(defn fetch-remote-account-resource [account-id]
+  (let [[_ username domain] (re-matches #"([^@]+?)@([^@]+)" account-id)
+        res @(http/get (str "https://" domain "/.well-known/webfinger")
+                       {:query-params {:resource (str "acct:" account-id)}})]
+    (if (= (:status res) 200)
+      (json/read-str (:body res) :key-fn keyword)
+      (throw (ex-info "failed to fetch remote account resource"
+                      {:status (:status res)})))))
+
+(defn link [resource rel]
+  (->> (:links resource)
+       (filter #(= (:rel %) rel))
+       first))
