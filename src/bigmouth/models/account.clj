@@ -8,19 +8,22 @@
 (set! *warn-on-reflection* true)
 
 (defprotocol AccountRepository
-  (find-account [this username]))
+  (find-account [this username])
+  (find-account-by-id [this id]))
 
 (defn- ensure-account! [accounts username]
   (swap! accounts
-         (fn [accounts]
-           (if (get accounts username)
+         (fn [{:keys [name->account] :as accounts}]
+           (if (get name->account username)
              accounts
-             (let [id (inc (count accounts))]
-               (assoc accounts username
-                      {:id id
-                       :username username
-                       :description "no description"
-                       :locked false}))))))
+             (let [id (str (inc (count accounts)))
+                   account {:id id
+                            :username username
+                            :description "no description"
+                            :locked false}]
+               (-> accounts
+                   (assoc-in [:name->account username] account)
+                   (assoc-in [:id->account id] account)))))))
 
 ;; The implementation below isn't intended to be used in production.
 ;; It's here mainly for development purpose.
@@ -29,7 +32,9 @@
   AccountRepository
   (find-account [this username]
     (ensure-account! accounts username)
-    (get @accounts username)))
+    (get-in @accounts [:name->account username]))
+  (find-account-by-id [this id]
+    (get-in @accounts [:id->account id])))
 
 (defn simple-in-memory-account-repository []
   (->SimpleInMemoryAccountRepository (atom {})))
