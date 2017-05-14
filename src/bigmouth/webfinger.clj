@@ -27,7 +27,8 @@
 
 (defn fetch-remote-account-resource [account-id]
   (let [[_ username domain] (re-matches #"([^@]+?)@([^@]+)" account-id)
-        res @(http/get (str "https://" domain "/.well-known/webfinger")
+        ;; TODO: it seems more appropriate to use HTTPS instead of HTTP
+        res @(http/get (str "http://" domain "/.well-known/webfinger")
                        {:query-params {:resource (str "acct:" account-id)}})]
     (if (= (:status res) 200)
       (json/read-str (:body res) :key-fn keyword)
