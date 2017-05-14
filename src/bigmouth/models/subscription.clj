@@ -23,10 +23,7 @@
       (doseq [subs (vals (get @subscriptions account))
               :when (<= (:expires_at subs) now)]
         (swap! subscriptions update account dissoc (:callback subs)))
-      (vals (get @subscriptions account))))
-  ;; for debugging
-  clojure.lang.IFn
-  (invoke [this] @subscriptions))
+      (vals (get @subscriptions account)))))
 
 (defn simple-in-memory-subscription-repository []
   (->SimpleInMemorySubscriptionRepository (atom {})))
