@@ -8,6 +8,20 @@
 
 (def XMLNS "http://salmon-protocol.org/ns/magic-env")
 
+(def VERBS
+  {:post           "http://activitystrea.ms/schema/1.0/post"
+   :share          "http://activitystrea.ms/schema/1.0/share"
+   :favorite       "http://activitystrea.ms/schema/1.0/favorite"
+   :unfavorite     "http://activitystrea.ms/schema/1.0/unfavorite"
+   :delete         "http://activitystrea.ms/schema/1.0/delete"
+   :follow         "http://activitystrea.ms/schema/1.0/follow"
+   :request_friend "http://activitystrea.ms/schema/1.0/request-friend"
+   :authorize      "http://activitystrea.ms/schema/1.0/authorize"
+   :reject         "http://activitystrea.ms/schema/1.0/reject"
+   :unfollow       "http://ostatus.org/schema/1.0/unfollow"
+   :block          "http://mastodon.social/schema/1.0/block"
+   :unblock        "http://mastodon.social/schema/1.0/unblock"})
+
 (defn parse [raw-body]
   (let [[data sig enc alg] (xpath/with-namespace-context {"me" XMLNS}
                              [(first (xpath/$x "//me:data" raw-body))

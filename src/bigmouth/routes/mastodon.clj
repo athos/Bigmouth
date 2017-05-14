@@ -22,8 +22,9 @@
 (defn- salmon [context account-id body]
   (if (empty? body)
     (res/status {} 200)
-    (do (salmon/salmon context account-id body)
-        (res/status {} 201))))
+    (let [account (account/find-account-by-id (:accounts context) account-id)]
+      (salmon/salmon context account body)
+      (res/status {} 201))))
 
 (defn make-mastodon-routes [context]
   (-> (routes

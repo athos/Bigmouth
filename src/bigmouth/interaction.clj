@@ -1,0 +1,30 @@
+(ns bigmouth.interaction)
+
+(defprotocol InteractionHandler
+  (post [this account])
+  (share [this account])
+  (delete [this account])
+  (follow [this account target])
+  (unfollow [this account target])
+  (request-friend [this account target])
+  (authorize [this account target])
+  (reject [this account target])
+  (favorite [this account])
+  (unfavorite [this account])
+  (block [this account target])
+  (unblock [this account target]))
+
+(extend-protocol InteractionHandler
+  nil
+  (post [this account])
+  (share [this account])
+  (delete [this account])
+  (follow [this account target])
+  (unfollow [this account target])
+  (request-friend [this account target])
+  (authorize [this account target])
+  (reject [this account target])
+  (favorite [this account])
+  (unfavorite [this account])
+  (block [this account target])
+  (unblock [this account target]))

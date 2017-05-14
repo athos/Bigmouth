@@ -1,5 +1,6 @@
 (ns dev
   (:require [bigmouth.core :as bigmouth]
+            [bigmouth.interaction :as interaction]
             [bigmouth.models.account :as account]
             [bigmouth.models.keystore :as keystore]
             [bigmouth.models.subscription :as subs]
@@ -14,10 +15,12 @@
    :repository/account {}
    :repository/keystore {}
    :repository/subscription {}
+   :handler/interaction {}
    :app/bigmouth {:configs (ig/ref :configs/bigmouth)
                   :accounts (ig/ref :repository/account)
                   :keystore (ig/ref :repository/keystore)
-                  :subscriptions (ig/ref :repository/subscription)}
+                  :subscriptions (ig/ref :repository/subscription)
+                  :interaction-handler (ig/ref :handler/interaction)}
    :adapter/http-kit {:port 8080 :app (ig/ref :app/bigmouth)}})
 
 (defmethod ig/init-key :configs/bigmouth [_ configs]
@@ -31,6 +34,13 @@
 
 (defmethod ig/init-key :repository/subscription [_ _]
   (subs/simple-in-memory-subscription-repository))
+
+(defmethod ig/init-key :handler/interaction [_ _]
+  (reify interaction/InteractionHandler
+    (follow [this account target]
+      (println account "just followed" target))
+    (unfollow [this account target]
+      (println account "just unfollowed" target))))
 
 (defmethod ig/init-key :app/bigmouth [_ context]
   (bigmouth/bigmouth context))
