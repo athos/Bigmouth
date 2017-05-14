@@ -24,8 +24,8 @@
     [body plain-text signature]))
 
 (defn unpack [raw-body]
-  (let [[body _ _] (parse raw-body)]
-    body))
+  (let [[^"[B" body _ _] (parse raw-body)]
+    (String. body)))
 
 (defn verify [raw-body ^PublicKey public-key]
   (try
