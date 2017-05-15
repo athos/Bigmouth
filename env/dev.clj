@@ -6,6 +6,7 @@
             [bigmouth.models.subscription :as subs]
             [clojure.pprint :refer [pp pprint]]
             [clojure.repl :refer :all]
+            [clojure.spec.test.alpha :as t]
             [clojure.tools.namespace.repl :refer [refresh]]
             [org.httpkit.server :as server]
             [integrant.core :as ig]))
@@ -54,11 +55,13 @@
 (def system nil)
 
 (defn go []
+  (t/instrument)
   (alter-var-root #'system (constantly (ig/init config))))
 
 (defn stop []
   (when system
     (ig/halt! system)
+    (t/unstrument)
     (alter-var-root #'system (constantly nil))))
 
 (defn reset []
