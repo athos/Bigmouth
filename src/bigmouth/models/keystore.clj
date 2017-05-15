@@ -1,6 +1,7 @@
 (ns bigmouth.models.keystore
-  (:require [bigmouth.models.account :as account])
-  (:import [java.security KeyPair KeyPairGenerator]))
+  (:require [bigmouth.models.account :as account]
+            [clojure.spec.alpha :as s])
+  (:import [java.security PublicKey PrivateKey KeyPair KeyPairGenerator]))
 
 (set! *warn-on-reflection* true)
 
@@ -8,6 +9,34 @@
   (find-public-key* [this username domain])
   (find-private-key* [this username])
   (save-key!* [this username domain public-key]))
+
+(s/def ::domain string?)
+
+(s/def ::public-key
+  #(instance? PublicKey %))
+
+(s/def ::private-key
+  #(instance? PrivateKey %))
+
+(s/def ::keystore
+  #(satisfies? KeyStore %))
+
+(s/fdef find-public-key*
+  :args (s/cat :this ::keystore
+               :username ::account/username
+               :domain ::domain)
+  :ret ::public-key)
+
+(s/fdef find-private-key*
+  :args (s/cat :this ::keystore
+               :username ::account/username)
+  :ret ::private-key)
+
+(s/fdef save-key!*
+  :args (s/cat :this ::keystore
+               :username ::account/username
+               :domain ::domain
+               :public-key ::public-key))
 
 (defn- destruct-name [name]
   (let [[_ username domain] (re-matches #"([^@]+?)(?:@([^@]+))?" name)]

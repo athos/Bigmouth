@@ -1,5 +1,6 @@
 (ns bigmouth.models.account
   (:require [bigmouth.utils :as utils]
+            [clojure.spec.alpha :as s]
             [clojure.string :as str])
   (:import [java.security KeyFactory]
            [java.security.interfaces RSAPublicKey]
@@ -10,6 +11,32 @@
 (defprotocol AccountRepository
   (find-account [this username])
   (find-account-by-id [this id]))
+
+(s/def ::id string?)
+(s/def ::username string?)
+(s/def ::description string?)
+(s/def ::locked (s/or :true true? :false false?))
+
+(s/def ::account
+  (s/keys :req-un [::id ::username]
+          :opt-un [::description ::locked]))
+
+(s/def ::account-or-username
+  (s/or :account ::account
+        :username ::username))
+
+(s/def ::repository
+  #(satisfies? AccountRepository %))
+
+(s/fdef find-account
+  :args (s/cat :this ::repository
+               :username ::username)
+  :ret ::account)
+
+(s/fdef find-account-by-id
+  :args (s/cat :this ::repository
+               :id ::id)
+  :ret ::account)
 
 (defn- ensure-account! [accounts username]
   (swap! accounts
@@ -41,10 +68,19 @@
 
 ;; utils
 
+(s/fdef ->username
+  :args (s/cat :account ::account-or-username)
+  :ret ::username)
+
 (defn ->username [account]
   (if (string? account)
     account
     (:username account)))
+
+(s/fdef ->account
+  :args (s/cat :account-repo ::repository
+               :account ::account-or-username)
+  :ret ::account)
 
 (defn ->account [account-repo account]
   (if (string? account)
