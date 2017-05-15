@@ -1,6 +1,6 @@
 (defproject bigmouth "0.1.0-SNAPSHOT"
   :description "Clojure framework to build delivery-only Mastodon-compatible web apps"
-  :url "https://github.com/athos/bigmouth"
+  :url "https://github.com/athos/Bigmouth"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
