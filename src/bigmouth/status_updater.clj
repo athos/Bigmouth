@@ -2,11 +2,16 @@
   (:require [bigmouth.atom :as atom]
             [bigmouth.models.account :as account]
             [bigmouth.models.subscription :as subs]
+            [bigmouth.specs :as specs]
             [bigmouth.utils :as utils]
+            [clojure.spec.alpha :as s]
             [org.httpkit.client :as http]
             [pandect.algo.sha1 :as sha1]))
 
 (defrecord StatusUpdater [context])
+
+(s/fdef make-status-updater
+  :args (s/cat :context ::specs/context))
 
 (defn make-status-updater [context]
   (->StatusUpdater context))

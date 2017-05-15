@@ -1,7 +1,9 @@
 (ns bigmouth.routes.well-known
   (:require [bigmouth.models.account :as account]
             [bigmouth.webfinger :as webfinger]
+            [bigmouth.specs :as specs]
             [clojure.data.json :as json]
+            [clojure.spec.alpha :as s]
             [compojure.core :refer :all]
             [ring.util.response :as res]
             [ring.middleware.params :refer [wrap-params]]
@@ -20,6 +22,9 @@
       (let [resource (webfinger/account-resource context account)]
         (-> (res/response (json/write-str resource))
             (res/content-type "application/jrd+json; charset=utf-8"))))))
+
+(s/fdef make-well-known-routes
+  :args (s/cat :context ::specs/context))
 
 (defn make-well-known-routes [context]
   (-> (routes

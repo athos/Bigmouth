@@ -1,6 +1,8 @@
 (ns bigmouth.routes.subscription
   (:require [bigmouth.models.account :as account]
             [bigmouth.models.subscription :as subs]
+            [bigmouth.specs :as specs]
+            [clojure.spec.alpha :as s]
             [org.httpkit.client :as http]
             [pandect.utils.convert :as conv]
             [ring.util.response :as res])
@@ -13,6 +15,9 @@
          bs (byte-array size)]
      (.nextBytes r bs)
      (conv/bytes->hex bs))))
+
+(s/fdef subscribe
+  :args (s/cat :context ::specs/context :params map?))
 
 (defn subscribe [context params]
   (let [topic (get params "hub.topic")
@@ -40,6 +45,9 @@
                                    secret
                                    lease-seconds))))
     (res/status {} 202)))
+
+(s/fdef unsubscribe
+  :args (s/cat :context ::specs/context :params map?))
 
 (defn unsubscribe [context params]
   (prn :params params))

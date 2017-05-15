@@ -3,6 +3,8 @@
             [bigmouth.models.account :as account]
             [bigmouth.routes.subscription :refer [subscribe unsubscribe]]
             [bigmouth.routes.salmon :as salmon]
+            [bigmouth.specs :as specs]
+            [clojure.spec.alpha :as s]
             [compojure.core :refer :all]
             [ring.util.response :as res]
             [ring.middleware.params :refer [wrap-params]]
@@ -25,6 +27,9 @@
     (let [account (account/find-account-by-id (:accounts context) account-id)]
       (salmon/salmon context account body)
       (res/status {} 201))))
+
+(s/fdef make-mastodon-routes
+  :args (s/cat :context ::specs/context))
 
 (defn make-mastodon-routes [context]
   (-> (routes

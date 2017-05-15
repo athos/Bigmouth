@@ -1,6 +1,11 @@
 (ns bigmouth.core
   (:require [bigmouth.routes :as routes]
-            [bigmouth.status-updater :as updater]))
+            [bigmouth.specs :as specs]
+            [bigmouth.status-updater :as updater]
+            [clojure.spec.alpha :as s]))
+
+(s/fdef bigmouth
+  :args (s/cat :context ::specs/context))
 
 (defn bigmouth [context]
   {:handler (routes/make-bigmouth-routes context)

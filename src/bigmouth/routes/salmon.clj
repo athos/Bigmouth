@@ -3,8 +3,10 @@
             [bigmouth.models.account :as account]
             [bigmouth.models.keystore :as keystore]
             [bigmouth.salmon :as salmon]
+            [bigmouth.specs :as specs]
             [bigmouth.webfinger :as webfinger]
             [clj-xpath.core :as xpath]
+            [clojure.spec.alpha :as s]
             [clojure.string :as str])
   (:import [java.net URL]))
 
@@ -42,6 +44,11 @@
     (with-ns #(URL->VERB (xpath/$x:text "./activity:verb" xml)))
     (catch Exception _
       :post)))
+
+(s/fdef salmon
+  :args (s/cat :context ::specs/context
+               :target-account ::account/account-or-username
+               :envelop string?))
 
 (defn salmon [context target-account envelop]
   (let [body (salmon/unpack envelop)
