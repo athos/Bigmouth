@@ -16,13 +16,14 @@
    :repository/account {}
    :repository/keystore {}
    :repository/subscription {}
-   :handler/interaction {}
-   :app/bigmouth {:configs (ig/ref :configs/bigmouth)
-                  :accounts (ig/ref :repository/account)
-                  :keystore (ig/ref :repository/keystore)
-                  :subscriptions (ig/ref :repository/subscription)
-                  :interaction-handler (ig/ref :handler/interaction)}
-   :adapter/http-kit {:port 8080 :app (ig/ref :app/bigmouth)}})
+   :extension/interaction {}
+   :app/context {:configs (ig/ref :configs/bigmouth)
+                 :accounts (ig/ref :repository/account)
+                 :keystore (ig/ref :repository/keystore)
+                 :subscriptions (ig/ref :repository/subscription)
+                 :interaction-handler (ig/ref :extension/interaction)}
+   :app/handler {:context (ig/ref :app/context)}
+   :adapter/http-kit {:port 8080 :handler (ig/ref :app/handler)}})
 
 (defmethod ig/init-key :configs/bigmouth [_ configs]
   configs)
@@ -36,18 +37,21 @@
 (defmethod ig/init-key :repository/subscription [_ _]
   (subs/simple-in-memory-subscription-repository))
 
-(defmethod ig/init-key :handler/interaction [_ _]
+(defmethod ig/init-key :extension/interaction [_ _]
   (reify interaction/InteractionHandler
     (follow [this account target]
       (println account "just followed" target))
     (unfollow [this account target]
       (println account "just unfollowed" target))))
 
-(defmethod ig/init-key :app/bigmouth [_ context]
-  (bigmouth/bigmouth context))
+(defmethod ig/init-key :app/context [_ context]
+  context)
 
-(defmethod ig/init-key :adapter/http-kit [_ {:keys [app] :as opts}]
-  (server/run-server (:handler app) (dissoc opts :app)))
+(defmethod ig/init-key :app/handler [_ {:keys [context]}]
+  (bigmouth/bigmouth-routes context))
+
+(defmethod ig/init-key :adapter/http-kit [_ {:keys [handler] :as opts}]
+  (server/run-server handler (dissoc opts :handler)))
 
 (defmethod ig/halt-key! :adapter/http-kit [_ server]
   (server))
