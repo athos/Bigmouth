@@ -1,4 +1,4 @@
-# Bigmouth [![Clojars Project](https://img.shields.io/clojars/v/bigmouth.svg)](https://clojars.org/bigmouth)
+# Bigmouth [![Clojars Project](https://img.shields.io/clojars/v/bigmouth.svg)](https://clojars.org/bigmouth) [![CircleCI](https://circleci.com/gh/athos/Bigmouth.svg?style=svg)](https://circleci.com/gh/athos/Bigmouth)
 
 Bigmouth is a Clojure framework to build delivery-only Mastodon-compatible web apps.
 
