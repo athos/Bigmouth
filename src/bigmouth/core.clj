@@ -4,9 +4,14 @@
             [bigmouth.status-updater :as updater]
             [clojure.spec.alpha :as s]))
 
-(s/fdef bigmouth
+(s/fdef status-updater
   :args (s/cat :context ::specs/context))
 
-(defn bigmouth [context]
-  {:handler (routes/make-bigmouth-routes context)
-   :updater (updater/make-status-updater context)})
+(defn status-updater [context]
+  (updater/make-status-updater context))
+
+(s/fdef bigmouth-handler
+  :args (s/cat :context ::specs/context))
+
+(defn bigmouth-routes [context]
+  (routes/make-bigmouth-routes context))
