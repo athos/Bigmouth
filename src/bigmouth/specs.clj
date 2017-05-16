@@ -10,6 +10,12 @@
 (s/def ::subscriptions ::subs/repository)
 (s/def ::interaction-handler ::interaction/handler)
 
+(s/def ::use-https? (s/or :true true? :false false?))
+(s/def ::local-domain string?)
+(s/def ::configs
+  (s/keys :req-un [::local-domain]
+          :opt-un [::use-https?]))
+
 (s/def ::context
-  (s/keys :req-un [::accounts ::keystore ::subscriptions]
+  (s/keys :req-un [::accounts ::keystore ::subscriptions ::configs]
           :opt-un [::interaction-handler]))
