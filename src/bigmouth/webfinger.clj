@@ -1,6 +1,7 @@
 (ns bigmouth.webfinger
   (:require [bigmouth.models.account :as account]
             [bigmouth.models.keystore :as keystore]
+            [bigmouth.salmon :as salmon]
             [bigmouth.utils :as utils]
             [clojure.data.json :as json]
             [org.httpkit.client :as http]))
@@ -20,7 +21,7 @@
               :href (account/salmon-url account configs)}
              {:rel "magic-public-key"
               :href (str "data:application/magic-public-key,"
-                         (account/public-key->magic-key public-key))}
+                         (salmon/public-key->magic-key public-key))}
              {:rel "http://ostatus.org/schema/1.0/subscribe"
               :template (str (utils/base-url configs)
                              "/authorize_follow?acct={uri}")}]}))

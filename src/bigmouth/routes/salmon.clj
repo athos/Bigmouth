@@ -35,7 +35,7 @@
             [_ magic-key] (-> (webfinger/link res "magic-public-key")
                               :href
                               (str/split #","))
-            public-key (account/magic-key->public-key magic-key)]
+            public-key (salmon/magic-key->public-key magic-key)]
         (keystore/save-key! keystore account-id public-key)
         public-key)))
 

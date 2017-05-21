@@ -1,10 +1,7 @@
 (ns bigmouth.models.account
   (:require [bigmouth.utils :as utils]
             [clojure.spec.alpha :as s]
-            [clojure.string :as str])
-  (:import [java.security KeyFactory]
-           [java.security.interfaces RSAPublicKey]
-           [java.security.spec RSAPublicKeySpec]))
+            [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
 
@@ -101,24 +98,3 @@
 
 (defn salmon-url [account configs]
   (format "%s/salmon/%s" (utils/base-url configs) (:id account)))
-
-(defn public-key->magic-key [^RSAPublicKey key]
-  (let [conv #(utils/base64-encode (.toByteArray ^BigInteger %))
-        modulus (conv (.getModulus key))
-        exponent (conv (.getPublicExponent key))]
-    (str "RSA." modulus "." exponent)))
-
-(defn magic-key->public-key [magic-key]
-  (let [conv (fn [x]
-               (let [bytes (utils/base64-decode x)]
-                 (if (neg? (aget bytes 0))
-                   (let [len (count bytes)
-                         arr (byte-array (inc len))]
-                     (aset arr 0 (byte 0))
-                     (System/arraycopy bytes 0 arr 1 len)
-                     (BigInteger. arr))
-                   (BigInteger. bytes))))
-        [_ modulus exponent] (str/split magic-key #"\.")
-        spec (RSAPublicKeySpec. (conv modulus) (conv exponent))]
-    (.. (KeyFactory/getInstance "RSA")
-        (generatePublic spec))))
