@@ -15,4 +15,6 @@
   :profiles {:dev {:source-paths ["env"]
                    :dependencies
                    [[integrant "0.4.0"]
-                    [org.clojure/tools.namespace "0.2.11"]]}})
+                    [eftest "0.3.1"]
+                    [org.clojure/tools.namespace "0.2.11"]]}}
+  :aliases {"test" ["run" "-m" "bigmouth.test-runner"]})

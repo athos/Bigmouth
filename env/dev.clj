@@ -4,6 +4,7 @@
             [bigmouth.models.account :as account]
             [bigmouth.models.keystore :as keystore]
             [bigmouth.models.subscription :as subs]
+            [bigmouth.test-runner :as runner]
             [clojure.pprint :refer [pp pprint]]
             [clojure.repl :refer :all]
             [clojure.spec.test.alpha :as t]
@@ -71,3 +72,10 @@
 (defn reset []
   (stop)
   (refresh :after 'dev/go))
+
+(defn run-tests []
+  (t/unstrument)
+  (try
+    (runner/run-tests :reporter :pretty)
+    (finally
+      (t/instrument))))

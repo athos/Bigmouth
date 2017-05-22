@@ -26,9 +26,9 @@
     (testing "GET /.well-known/host-meta"
       (let [res (handler {:request-method :get
                           :uri "/.well-known/host-meta"})]
-        (is (= (:status res) 200))))
+        (is (= 200 (:status res)))))
     (testing "GET /.well-known/webfinger"
       (let [res (handler {:request-method :get
                           :uri "/.well-known/webfinger"
                           :params {:resource "acct:foo@example.com"}})]
-        (is (= (:status res) 200))))))
+        (is (= 200 (:status res)))))))
