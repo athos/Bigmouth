@@ -6,8 +6,6 @@
             [bigmouth.models.subscription :as subs]
             [bigmouth.routes.well-known :refer [make-well-known-routes]]))
 
-(t/instrument)
-
 (defn test-context [{:keys [id username] :as account}]
   {:accounts (reify account/AccountRepository
                (find-account [_ username']
